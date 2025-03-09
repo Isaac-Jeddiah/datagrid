@@ -1,0 +1,103 @@
+{
+    "ResultObject": [
+      {
+        "ThirdPartyInvoiceDetailId": "inv-detail-001",
+        "LineType": 0,
+        "ThirdPartyVendorProductId": "1613e1e0-4bf1-4058-ae6d-3ef274eced29",
+        "ThirdPartyVendorId": "3b3b4551-fc2d-475f-86e7-3d9674203a5a",
+        "ProductDescription": "test",
+        "Brand": "123",
+        "ManufacturererNumber": "123",
+        "UPC": "123",
+        "IsProductVisible": false,
+        "ChangeDate": "2024-12-03T19:11:19.577",
+        "ChangeUserName": "rfs test",
+        "ChangeCustomerId": "b83e2317-8614-4b26-8b76-5c811edf6065",
+        "IsOnList": false,
+        "ThirdPartyInvoiceDetailProductUnitOfMeasures": [
+          {
+            "ThirdPartyUnitOfMeasureType": 8,
+            "ThirdPartyUnitOfMeasureTypeAbbreviation": "LB",
+            "ThirdPartyUnitOfMeasureTypeName": "Pound",
+            "ProductNumber": "test",
+            "QuantityOrdered": "3255",
+            "QuantityShipped": "956",
+            "Weight": "10000",
+            "PricePerCase": null,
+            "ExtendedPrice": null
+          }
+        ]
+      },
+      {
+        "ThirdPartyInvoiceDetailId": "inv-detail-002",
+        "LineType": 0,
+        "ThirdPartyVendorProductId": "35498f67-46aa-431b-b914-4b233122b07f",
+        "ThirdPartyVendorId": "3b3b4551-fc2d-475f-86e7-3d9674203a5a",
+        "ProductDescription": "not ok",
+        "Brand": "",
+        "ManufacturererNumber": "",
+        "UPC": "",
+        "IsProductVisible": false,
+        "ChangeDate": "2025-01-21T14:40:09.24",
+        "ChangeUserName": "Brian OConnor",
+        "ChangeCustomerId": "b83e2317-8614-4b26-8b76-5c811edf6065",
+        "IsOnList": false,
+        "ThirdPartyInvoiceDetailProductUnitOfMeasures": [
+          {
+            "ThirdPartyUnitOfMeasureType": 1,
+            "ThirdPartyUnitOfMeasureTypeAbbreviation": "EA",
+            "ThirdPartyUnitOfMeasureTypeName": "Each",
+            "ProductNumber": "notok12",
+            "QuantityOrdered": null,
+            "QuantityShipped": null,
+            "Weight": null,
+            "PricePerCase": null,
+            "ExtendedPrice": null
+          },
+          {
+            "ThirdPartyUnitOfMeasureType": 7,
+            "ThirdPartyUnitOfMeasureTypeAbbreviation": "QT",
+            "ThirdPartyUnitOfMeasureTypeName": "Quart",
+            "ProductNumber": "custom12",
+            "QuantityOrdered": null,
+            "QuantityShipped": null,
+            "Weight": null,
+            "PricePerCase": null,
+            "ExtendedPrice": null
+          }
+        ]
+      },
+      {
+        "ThirdPartyInvoiceDetailId": "inv-detail-003",
+        "LineType": 0,
+        "ThirdPartyVendorProductId": "f2a190fa-630b-486b-a141-94f6ae2ffa44",
+        "ThirdPartyVendorId": "3b3b4551-fc2d-475f-86e7-3d9674203a5a",
+        "ProductDescription": "ok",
+        "Brand": "",
+        "ManufacturererNumber": "",
+        "UPC": "",
+        "IsProductVisible": false,
+        "ChangeDate": "2025-02-27T15:43:17.607",
+        "ChangeUserName": "v rfs",
+        "ChangeCustomerId": "b83e2317-8614-4b26-8b76-5c811edf6065",
+        "IsOnList": false,
+        "ThirdPartyInvoiceDetailProductUnitOfMeasures": [
+          {
+            "ThirdPartyUnitOfMeasureType": 5,
+            "ThirdPartyUnitOfMeasureTypeAbbreviation": "FL OZ",
+            "ThirdPartyUnitOfMeasureTypeName": "Fluid Ounce",
+            "ProductNumber": "ok12",
+            "QuantityOrdered": null,
+            "QuantityShipped": null,
+            "Weight": null,
+            "PricePerCase": null,
+            "ExtendedPrice": null
+          }
+        ]
+      }
+    ],
+    "IsSuccess": true,
+    "ErrorMessages": [],
+    "InformationMessages": [],
+    "SupportMessages": []
+  }

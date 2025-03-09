@@ -4,39 +4,6 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useApi } from './ApiContext';
 const ProductDataGrid = () => {
     const { products,setProducts,handleTextFieldChange, loading, invoiceStatuses, setInvoiceStatuses } = useApi();
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const response = await fetch('http://localhost:5000/ResultObject');
-//         const data = await response.json();
-//         setProducts(data);
-//         const statuses = {};
-//         data.forEach(product => {
-//           statuses[product.ThirdPartyInvoiceDetailId] = 'Invoice';
-//         });
-//         setInvoiceStatuses(statuses);
-//         setLoading(false);
-//       } catch (error) {
-//         console.error('Error fetching data:', error);
-//         setLoading(false);
-//       }
-//     };
-//     fetchData();
-//   }, []);
-
-//   const handleTextFieldChange = (productId, uomIndex, field, value) => {
-//     setProducts(prevProducts => {
-//       return prevProducts.map(product => {
-//         if (product.ThirdPartyInvoiceDetailId === productId) {
-//           const updatedUOMs = [...product.ThirdPartyInvoiceDetailProductUnitOfMeasures];
-//           updatedUOMs[uomIndex] = { ...updatedUOMs[uomIndex], [field]: value };
-//           return { ...product, ThirdPartyInvoiceDetailProductUnitOfMeasures: updatedUOMs };
-//         }
-//         return product;
-//       });
-//     });
-//   };
-
   const handleInvoiceChange = (productId, value) => {
     setInvoiceStatuses(prev => ({ ...prev, [productId]: value }));
   };
@@ -85,16 +52,23 @@ const handleFieldUpdate = (params, field) => {
         <TextField
           variant="outlined"
           size="small"
-          value={params.value}
-          onChange={(e) => handleTextFieldChange(
-            params.row.productId,
-            params.row.uomIndex,
-            field === 'ordered' ? 'QuantityOrdered' : 
-            field === 'shipped' ? 'QuantityShipped' : 
-            field === 'weight' ? 'Weight' : 
-            field === 'price' ? 'PricePerCase' : 'ExtendedPrice',
-            e.target.value
-          )}onBlur={() => {}}
+          defaultValue={params.value}
+          onChange={(e) => {
+            const newValue = e.target.value;
+            const fieldMapping = {
+              ordered: 'QuantityOrdered',
+              shipped: 'QuantityShipped',
+              weight: 'Weight',
+              price: 'PricePerCase'
+            };
+            handleTextFieldChange(
+              params.row.productId,
+              params.row.uomIndex,
+              fieldMapping[field],
+              newValue
+            );
+          }}
+         onBlur={() => {}}
           sx={{ width: '90%',mt:1 }}
         />
       )
@@ -110,18 +84,18 @@ const handleFieldUpdate = (params, field) => {
           <TextField
             variant="outlined"
             size="small"
-            value={params.value}
+            defaultValue={params.value}
             onChange={(e) => handleTextFieldChange(
-              params.row.productId,
-              params.row.uomIndex,
-              'ExtendedPrice',
-              e.target.value
-            )}
+                params.row.productId,
+                params.row.uomIndex,
+                'ExtendedPrice',
+                e.target.value
+              )}
             onBlur={() => {}}
             sx={{ mb: 1,mt:1 }}
           />
           <Select
-            value={invoiceStatuses[params.row.productId]}
+            value={invoiceStatuses[params.row.productId] || 'Pending'}
             size="small"
             sx={{ width: '100%' }}
             onChange={(e) => handleInvoiceChange(params.row.productId, e.target.value)}

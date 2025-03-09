@@ -13,7 +13,7 @@ export const ApiProvider = ({ children }) => {
     try {
       const response = await axios.get('http://localhost:5000/ResultObject');
       const data = response.data;
-      console.log('Fetching new data:', new Date().toLocaleTimeString());
+      
       setProducts(data);
     //   setProducts(prevProducts => {
     //     const updatedProducts = data.map(newProduct => {
@@ -48,43 +48,73 @@ export const ApiProvider = ({ children }) => {
   // Optimized update handler with debouncing
   const handleTextFieldChange = useCallback(async (productId, uomIndex, field, value) => {
     try {
-      // First find the product to update
-      const productToUpdate = products.find(p => p.ThirdPartyInvoiceDetailId === productId);
-      if (!productToUpdate) return;
-  
-      // Create updated UOM array
-      const updatedUOMs = [...productToUpdate.ThirdPartyInvoiceDetailProductUnitOfMeasures];
-      updatedUOMs[uomIndex] = {
-        ...updatedUOMs[uomIndex],
-        [field]: value
-      };
-  
       // Update local state first
       setProducts(prevProducts => 
-        prevProducts.map(product => 
-          product.ThirdPartyInvoiceDetailId === productId 
-            ? {
-                ...product,
-                ThirdPartyInvoiceDetailProductUnitOfMeasures: updatedUOMs
-              }
-            : product
-        )
+        prevProducts.map(product => {
+          if (product.ThirdPartyInvoiceDetailId === productId) {
+            const updatedUOMs = [...product.ThirdPartyInvoiceDetailProductUnitOfMeasures];
+            updatedUOMs[uomIndex] = {
+              ...updatedUOMs[uomIndex],
+              [field]: value
+            };
+            return {
+              ...product,
+              ThirdPartyInvoiceDetailProductUnitOfMeasures: updatedUOMs
+            };
+          }
+          return product;
+        })
       );
-  
-      // Then update the API
-      await axios.patch(`http://localhost:5000/ResultObject/${productId}`, {
-        id: productId,
-        uomIndex: uomIndex,
-        field: field,
-        value: value,
-        ThirdPartyInvoiceDetailProductUnitOfMeasures: updatedUOMs
-      });
-  
-      console.log('Update successful for product:', productId);
+
+      // Update the API using PUT request
+      const productToUpdate = products.find(p => p.ThirdPartyInvoiceDetailId === productId);
+      if (!productToUpdate) return;
+
+      const response = await axios.put(`http://localhost:5000/ResultObject/${productId}`, productToUpdate);
+    
     } catch (error) {
       console.error('Failed to update:', error);
     }
   }, [products]);
+//   const handleTextFieldChange = useCallback(async (productId, uomIndex, field, value) => {
+//     try {
+//       // First find the product to update
+//       const productToUpdate = products.find(p => p.ThirdPartyInvoiceDetailId === productId);
+//       if (!productToUpdate) return;
+  
+//       // Create updated UOM array
+//       const updatedUOMs = [...productToUpdate.ThirdPartyInvoiceDetailProductUnitOfMeasures];
+//       updatedUOMs[uomIndex] = {
+//         ...updatedUOMs[uomIndex],
+//         [field]: value
+//       };
+  
+//       // Update local state first
+//       setProducts(prevProducts => 
+//         prevProducts.map(product => 
+//           product.ThirdPartyInvoiceDetailId === productId 
+//             ? {
+//                 ...product,
+//                 ThirdPartyInvoiceDetailProductUnitOfMeasures: updatedUOMs
+//               }
+//             : product
+//         )
+//       );
+  
+//       // Then update the API
+//       await axios.patch(`http://localhost:5000/ResultObject/${productId}`, {
+//         id: productId,
+//         uomIndex: uomIndex,
+//         field: field,
+//         value: value,
+//         ThirdPartyInvoiceDetailProductUnitOfMeasures: updatedUOMs
+//       });
+  
+//       console.log('Update successful for product:', productId);
+//     } catch (error) {
+//       console.error('Failed to update:', error);
+//     }
+//   }, [products]);
   // handle invoice change
   const handleInvoiceChange = (productId, value) => {    
     setInvoiceStatuses(prev => ({
@@ -111,7 +141,7 @@ export const ApiProvider = ({ children }) => {
   useEffect(() => {
     fetchProducts(); // Initial fetch
     const interval = setInterval(() => {
-      console.log('Refreshing data...');
+      
       fetchProducts();
     }, 1000); // 1 second refresh
 
