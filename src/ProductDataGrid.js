@@ -9,7 +9,7 @@ const ProductDataGrid = () => {
   };
 
   if (loading) return <Typography>Loading...</Typography>;
-// In the handleTextFieldChange call:
+
 
 const handleFieldUpdate = (params, field) => {
     const { row } = params;

@@ -8,36 +8,13 @@ export const ApiProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [invoiceStatuses, setInvoiceStatuses] = useState({});
 
-  // Fetch products with optimized caching
   const fetchProducts = useCallback(async () => {
     try {
       const response = await axios.get('http://localhost:5000/ResultObject');
       const data = response.data;
       
       setProducts(data);
-    //   setProducts(prevProducts => {
-    //     const updatedProducts = data.map(newProduct => {
-    //       const existingProduct = prevProducts.find(
-    //         p => p.ThirdPartyInvoiceDetailId === newProduct.ThirdPartyInvoiceDetailId
-    //       );
-          
-    //       if (existingProduct) {
-    //         return {
-    //           ...newProduct,
-    //           ThirdPartyInvoiceDetailProductUnitOfMeasures: 
-    //             newProduct.ThirdPartyInvoiceDetailProductUnitOfMeasures.map((uom, idx) => ({
-    //               ...uom,
-    //               ...existingProduct.ThirdPartyInvoiceDetailProductUnitOfMeasures[idx]
-    //             }))
-    //         };
-    //       }
-    //       return newProduct;
-    //     });
-        
-    //     console.log('Updated products:', updatedProducts);
-    //     return updatedProducts;
-    //   });
-
+    
       setLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -45,10 +22,9 @@ export const ApiProvider = ({ children }) => {
     }
   }, []);
 
-  // Optimized update handler with debouncing
   const handleTextFieldChange = useCallback(async (productId, uomIndex, field, value) => {
     try {
-      // Update local state first
+
       setProducts(prevProducts => 
         prevProducts.map(product => {
           if (product.ThirdPartyInvoiceDetailId === productId) {
@@ -76,53 +52,13 @@ export const ApiProvider = ({ children }) => {
       console.error('Failed to update:', error);
     }
   }, [products]);
-//   const handleTextFieldChange = useCallback(async (productId, uomIndex, field, value) => {
-//     try {
-//       // First find the product to update
-//       const productToUpdate = products.find(p => p.ThirdPartyInvoiceDetailId === productId);
-//       if (!productToUpdate) return;
-  
-//       // Create updated UOM array
-//       const updatedUOMs = [...productToUpdate.ThirdPartyInvoiceDetailProductUnitOfMeasures];
-//       updatedUOMs[uomIndex] = {
-//         ...updatedUOMs[uomIndex],
-//         [field]: value
-//       };
-  
-//       // Update local state first
-//       setProducts(prevProducts => 
-//         prevProducts.map(product => 
-//           product.ThirdPartyInvoiceDetailId === productId 
-//             ? {
-//                 ...product,
-//                 ThirdPartyInvoiceDetailProductUnitOfMeasures: updatedUOMs
-//               }
-//             : product
-//         )
-//       );
-  
-//       // Then update the API
-//       await axios.patch(`http://localhost:5000/ResultObject/${productId}`, {
-//         id: productId,
-//         uomIndex: uomIndex,
-//         field: field,
-//         value: value,
-//         ThirdPartyInvoiceDetailProductUnitOfMeasures: updatedUOMs
-//       });
-  
-//       console.log('Update successful for product:', productId);
-//     } catch (error) {
-//       console.error('Failed to update:', error);
-//     }
-//   }, [products]);
-  // handle invoice change
-  const handleInvoiceChange = (productId, value) => {    
+const handleInvoiceChange = (productId, value) => {    
     setInvoiceStatuses(prev => ({
         ...prev,
         [productId]: value
         }));
   }
-  // Handle invoice status changes
+  
   const updateInvoiceStatus = useCallback(async (productId, status) => {
     setInvoiceStatuses(prev => ({
       ...prev,
@@ -139,11 +75,11 @@ export const ApiProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    fetchProducts(); // Initial fetch
+    fetchProducts(); 
     const interval = setInterval(() => {
       
       fetchProducts();
-    }, 1000); // 1 second refresh
+    }, 1000); 
 
     return () => clearInterval(interval);
   }, [fetchProducts]);
