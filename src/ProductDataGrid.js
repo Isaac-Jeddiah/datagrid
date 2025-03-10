@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, TextField, Select, MenuItem, Paper, Grid } from '@mui/material';
+import { Typography,Box, TextField, Select, MenuItem, Paper, Grid } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { useApi } from './ApiContext';
 
@@ -17,8 +17,12 @@ const ProductDataGrid = () => {
       field: 'product',
       headerName: 'PRODUCT',
       flex: 1.5,
-      headerAlign: 'left',
-      renderCell: (params) => <Typography sx={{ fontWeight: 'bold' }}>{params.value}</Typography>,
+      headerAlign: 'center',
+      renderCell: (params) => (
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' }}>
+          <Typography sx={{ fontWeight: 'bold' }}>{params.value}</Typography>
+        </Box>
+      ),
    },
     { field: 'productnumber', headerName: 'ID', flex: 1, headerAlign: 'center' },
     { field: 'uomType', headerName: 'UOM', flex: 1, headerAlign: 'center' },
@@ -127,17 +131,19 @@ const ProductDataGrid = () => {
   
   return (
     <Paper sx={{ width: '100%' }}>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        rowHeight={100}
-        disableColumnMenu
-        disableColumnFilter
-        disableColumnSelector
-        disableRowSelectionOnClick
-        unstable_rowSpanning
-        hideFooter
-      />
+     <DataGrid
+  rows={rows}
+  columns={columns}
+  rowHeight={110}
+  disableColumnMenu
+  disableColumnFilter
+  disableColumnSelector
+  disableRowSelectionOnClick
+  
+  unstable_rowSpanning
+  hideFooter
+  
+/>
     </Paper>
   );
 };

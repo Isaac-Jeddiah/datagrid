@@ -22,8 +22,8 @@
           "ThirdPartyUnitOfMeasureTypeName": "Pound",
           "ProductNumber": "test",
           "QuantityOrdered": "3",
-          "QuantityShipped": "1",
-          "Weight": "92",
+          "QuantityShipped": "",
+          "Weight": "123",
           "PricePerCase": "100",
           "ExtendedPrice": "5"
         }

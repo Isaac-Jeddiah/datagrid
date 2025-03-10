@@ -24,9 +24,9 @@ export const ApiProvider = ({ children }) => {
 
   const handleTextFieldChange = useCallback(async (productId, uomIndex, field, value) => {
     try {
-
-      setProducts(prevProducts => 
-        prevProducts.map(product => {
+      // Update local state first
+      setProducts(prevProducts => {
+        const updatedProducts = prevProducts.map(product => {
           if (product.ThirdPartyInvoiceDetailId === productId) {
             const updatedUOMs = [...product.ThirdPartyInvoiceDetailProductUnitOfMeasures];
             updatedUOMs[uomIndex] = {
@@ -39,19 +39,54 @@ export const ApiProvider = ({ children }) => {
             };
           }
           return product;
-        })
-      );
-
-      // Update the API using PUT request
-      const productToUpdate = products.find(p => p.ThirdPartyInvoiceDetailId === productId);
-      if (!productToUpdate) return;
-
-      const response = await axios.put(`http://localhost:5000/ResultObject/${productId}`, productToUpdate);
-    
+        });
+        
+        // Get the updated product from the new state
+        const productToUpdate = updatedProducts.find(p => p.ThirdPartyInvoiceDetailId === productId);
+        
+        // Make the API call with the updated product
+        if (productToUpdate) {
+          axios.put(`http://localhost:5000/ResultObject/${productId}`, productToUpdate)
+            .catch(error => console.error('Failed to update:', error));
+        }
+        
+        return updatedProducts;
+      });
     } catch (error) {
       console.error('Failed to update:', error);
     }
-  }, [products]);
+  }, []);
+
+  // const handleTextFieldChange = useCallback(async (productId, uomIndex, field, value) => {
+  //   try {
+
+  //     setProducts(prevProducts => 
+  //       prevProducts.map(product => {
+  //         if (product.ThirdPartyInvoiceDetailId === productId) {
+  //           const updatedUOMs = [...product.ThirdPartyInvoiceDetailProductUnitOfMeasures];
+  //           updatedUOMs[uomIndex] = {
+  //             ...updatedUOMs[uomIndex],
+  //             [field]: value
+  //           };
+  //           return {
+  //             ...product,
+  //             ThirdPartyInvoiceDetailProductUnitOfMeasures: updatedUOMs
+  //           };
+  //         }
+  //         return product;
+  //       })
+  //     );
+
+  //     // Update the API using PUT request
+  //     const productToUpdate = products.find(p => p.ThirdPartyInvoiceDetailId === productId);
+  //     if (!productToUpdate) return;
+
+  //     const response = await axios.put(`http://localhost:5000/ResultObject/${productId}`, productToUpdate);
+    
+  //   } catch (error) {
+  //     console.error('Failed to update:', error);
+  //   }
+  // }, [products]);
 const handleInvoiceChange = (productId, value) => {    
     setInvoiceStatuses(prev => ({
         ...prev,
