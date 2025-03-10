@@ -21,11 +21,11 @@
           "ThirdPartyUnitOfMeasureTypeAbbreviation": "LB",
           "ThirdPartyUnitOfMeasureTypeName": "Pound",
           "ProductNumber": "test",
-          "QuantityOrdered": "3255",
-          "QuantityShipped": "123456789",
-          "Weight": "10000",
-          "PricePerCase": null,
-          "ExtendedPrice": null
+          "QuantityOrdered": "3",
+          "QuantityShipped": "1",
+          "Weight": "92",
+          "PricePerCase": "100",
+          "ExtendedPrice": "5"
         }
       ]
     },

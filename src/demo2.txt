@@ -1,0 +1,116 @@
+import React from 'react';
+import { Typography, TextField, Select, MenuItem, Paper, Grid } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
+import { useApi } from './ApiContext';
+
+const ProductDataGrid = () => {
+  const { products, handleTextFieldChange, loading, invoiceStatuses, setInvoiceStatuses } = useApi();
+
+  if (loading) return <Typography>Loading...</Typography>;
+
+  const handleInvoiceChange = (productId, value) => {
+    setInvoiceStatuses(prev => ({ ...prev, [productId]: value }));
+  };
+
+  const columns = [
+    { field: 'product', headerName: 'PRODUCT', flex: 1.5, headerAlign: 'left', renderCell: (params) => <Typography sx={{ fontWeight: 'bold' }}>{params.value}</Typography> },
+    { field: 'productnumber', headerName: 'ID', flex: 1, headerAlign: 'center' },
+    { field: 'uomType', headerName: 'UOM', flex: 1, headerAlign: 'center' },
+    ...['ordered', 'shipped', 'weight', 'price'].map(field => ({
+      field,
+      headerName: field.toUpperCase(),
+      flex: 1,
+      align: 'center',
+      headerAlign: 'center',
+      renderCell: (params) => (
+        <TextField
+          variant="outlined"
+          size="small"
+          defaultValue={params.value}
+          onChange={(e) => handleTextFieldChange(
+            params.row.productId,
+            params.row.uomIndex,
+            field,
+            e.target.value
+          )}
+          sx={{ width: '90%', mt: 1 }}
+        />
+      )
+    })),
+    {
+      field: 'extPrice',
+      headerName: 'EXT PRICE',
+      flex: 1,
+      align: 'center',
+      headerAlign: 'center',
+      renderCell: (params) => (
+        <Grid container direction="column" sx={{ width: '90%', mb: 1 }}>
+          <TextField
+            variant="outlined"
+            size="small"
+            defaultValue={params.value}
+            onChange={(e) => handleTextFieldChange(
+                params.row.productId,
+                params.row.uomIndex,
+                'ExtendedPrice',
+                e.target.value
+            )}
+            sx={{ mb: 1, mt: 1 }}
+          />
+          <Select
+            value={invoiceStatuses[params.row.productId] || 'Pending'}
+            size="small"
+            sx={{ width: '100%' }}
+            onChange={(e) => handleInvoiceChange(params.row.productId, e.target.value)}
+          >
+            {['Invoice', 'Pending', 'Processing', 'Shipped', 'Delivered'].map(status => (
+              <MenuItem key={status} value={status}>{status}</MenuItem>
+            ))}
+          </Select>
+        </Grid>
+      )
+    },
+  ];
+
+  const rows = products.flatMap((product, productIndex) => 
+    product.ThirdPartyInvoiceDetailProductUnitOfMeasures.map((uom, uomIndex) => ({
+      id: `${productIndex}-${uomIndex}`,
+      productId: product.ThirdPartyInvoiceDetailId,
+      productnumber: uom.ProductNumber,
+      uomType: uom.ThirdPartyUnitOfMeasureTypeAbbreviation,
+      uomIndex,
+      product: uomIndex === 0 ? product.ProductDescription : '',
+      ordered: uom.QuantityOrdered || '',
+      shipped: uom.QuantityShipped || '',
+      weight: uom.Weight || '',
+      price: uom.PricePerCase || '',
+      extPrice: uom.ExtendedPrice,
+    }))
+  );
+
+  return (
+    <Paper sx={{ width: '100%', border: '1px solid #ccc', borderRadius: 2 }}>
+             <DataGrid
+          rows={rows}
+          columns={columns}
+          density="compact"
+          showCellVerticalBorder
+          showColumnVerticalBorder
+          disableRowSelectionOnClick
+          unstable_rowSpanning={true}
+          hideFooter
+          sx={{
+            '& .MuiDataGrid-row:hover': {
+              backgroundColor: 'transparent',
+            },
+            '& .bold': {
+              fontWeight: 'bold',
+            },
+          }}
+        />
+
+    </Paper>
+  );
+};
+
+export default ProductDataGrid;

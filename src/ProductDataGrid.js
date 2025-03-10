@@ -1,53 +1,39 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Typography, TextField, Select, MenuItem, Paper, Grid } from '@mui/material';
+import React from 'react';
+import { Typography, TextField, Select, MenuItem, Paper, Grid } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { useApi } from './ApiContext';
+
 const ProductDataGrid = () => {
-    const { products,setProducts,handleTextFieldChange, loading, invoiceStatuses, setInvoiceStatuses } = useApi();
+  const { products, handleTextFieldChange, loading, invoiceStatuses, setInvoiceStatuses } = useApi();
+
+  if (loading) return <Typography>Loading...</Typography>;
+
   const handleInvoiceChange = (productId, value) => {
     setInvoiceStatuses(prev => ({ ...prev, [productId]: value }));
   };
 
-  if (loading) return <Typography>Loading...</Typography>;
-
-
-const handleFieldUpdate = (params, field) => {
-    const { row } = params;
-    handleTextFieldChange(
-      row.productId,
-      row.uomIndex,
-      field,
-      params.value
-    );
-  };
   const columns = [
     {
       field: 'product',
       headerName: 'PRODUCT',
       flex: 1.5,
       headerAlign: 'left',
-      renderCell: (params) => (
-        <Typography sx={{ fontWeight: 'bold' }}>{params.value}</Typography>
-      )
-    },
-    {
-      field: 'productnumber',
-      headerName: 'ID',
-      flex: 1,
-      headerAlign: 'center',
-    },
-    {
-      field: 'uomType',
-      headerName: 'UOM',
-      flex: 1,
-      headerAlign: 'center',
-    },
+      renderCell: (params) => <Typography sx={{ fontWeight: 'bold' }}>{params.value}</Typography>,
+   },
+    { field: 'productnumber', headerName: 'ID', flex: 1, headerAlign: 'center' },
+    { field: 'uomType', headerName: 'UOM', flex: 1, headerAlign: 'center' },
     ...['ordered', 'shipped', 'weight', 'price'].map(field => ({
       field,
       headerName: field.toUpperCase(),
       flex: 1,
       align: 'center',
       headerAlign: 'center',
+      valueFormatter: (value) => {
+        return `${value} yo`;
+      },
+      rowSpanValueGetter: (value, row) => {
+        return row ? `${row.productnumber}` : value;
+      },
       renderCell: (params) => (
         <TextField
           variant="outlined"
@@ -79,6 +65,12 @@ const handleFieldUpdate = (params, field) => {
       flex: 1,
       align: 'center',
       headerAlign: 'center',
+      valueFormatter: (value) => {
+        return `${value} yo`;
+      },
+      rowSpanValueGetter: (value, row) => {
+        return row ? `${row.productnumber}` : value;
+      },
       renderCell: (params) => (
         <Grid container direction="column" sx={{ width: '90%',mb:1 }}>
           <TextField
@@ -112,22 +104,27 @@ const handleFieldUpdate = (params, field) => {
   const rows = products.flatMap((product, productIndex) => 
     product.ThirdPartyInvoiceDetailProductUnitOfMeasures.map((uom, uomIndex) => {
       const isFirstRow = uomIndex === 0;
+      const uoms = product.ThirdPartyInvoiceDetailProductUnitOfMeasures;
+    
       return {
         id: `${productIndex}-${uomIndex}`,
         productId: product.ThirdPartyInvoiceDetailId,
         productnumber: uom.ProductNumber,
         uomType: uom.ThirdPartyUnitOfMeasureTypeAbbreviation,
         uomIndex,
-        product: isFirstRow ? product.ProductDescription : '',
+        product: product.ProductDescription ,
         ordered: uom.QuantityOrdered || '',
         shipped: uom.QuantityShipped || '',
         weight: uom.Weight || '',
         price: uom.PricePerCase || '',
         extPrice: uom.ExtendedPrice,
+        rowSpan: uomIndex === 0 ? uoms.length : 0, // Span only the first row of a product
+      
       };
     })
   );
 
+  
   return (
     <Paper sx={{ width: '100%' }}>
       <DataGrid
@@ -138,12 +135,8 @@ const handleFieldUpdate = (params, field) => {
         disableColumnFilter
         disableColumnSelector
         disableRowSelectionOnClick
+        unstable_rowSpanning
         hideFooter
-        sx={{
-          '& .MuiDataGrid-columnHeaders': { backgroundColor: 'red !important', fontWeight: 'bold',color: 'black' },
-          '& .MuiDataGrid-cell': { borderBottom: 'none' },
-          '& .MuiDataGrid-virtualScroller': { overflowX: 'hidden' }
-        }}
       />
     </Paper>
   );
